@@ -1,0 +1,3 @@
+[submodule "public/ai-resilient-experiment"]
+	path = public/ai-resilient-experiment
+	url = https://github.com/oliveralonzo/ai-resilient-experiment.git

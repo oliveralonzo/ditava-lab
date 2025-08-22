@@ -1,0 +1,19 @@
+---
+interface Props {
+    level?: 1 | 2 | 3;
+    id?: string;
+}
+
+const { level = 1, id } = Astro.props;
+const Tag = `h${level}` as keyof HTMLElementTagNameMap;
+
+const headingClass = {
+    1: "text-3xl font-bold text-neutral-900 dark:text-neutral-100 font-sans mb-[1rem]",
+    2: "text-2xl font-medium text-neutral-700 dark:text-neutral-200 font-sans mb-[1rem]",
+    3: "text-xl font-light text-neutral-700 dark:text-neutral-300 font-sans mb-[1rem]",
+}[level];
+---
+
+<Tag id={id} class={[headingClass, "scroll-mt-navbar"].join(" ")}>
+    <slot />
+</Tag>

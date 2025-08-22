@@ -1,0 +1,24 @@
+---
+// InfoSection.astro
+import InfoCard from "./InfoCard.astro";
+import SectionHeading from "./SectionHeading.astro";
+import type { InfoCardData } from "./InfoCard.astro";
+
+interface Props {
+    title: string;
+    items: InfoCardData[];
+    id?: string;
+}
+
+const { title, items, id } = Astro.props as Props;
+---
+
+<section class="mt-16">
+    <SectionHeading level={1} id={id}>{title}</SectionHeading>
+
+    <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 sm:gap-y-[2vw] gap-x-[2vw] pb-[1vh]"
+    >
+        {items.map((item, i) => <InfoCard {...item} key={i} />)}
+    </div>
+</section>

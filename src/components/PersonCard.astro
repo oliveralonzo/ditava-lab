@@ -1,0 +1,39 @@
+---
+import type { PersonType } from "../utils/constants";
+
+export interface PersonCardProps {
+    name: string;
+    position: string;
+    role: string;
+    type: PersonType;
+    image?: string;
+    color?: string; // Used for background circle when no image
+}
+
+const { name, position, role, image, color } = Astro.props as PersonCardProps;
+---
+
+<div class="flex gap-4 items-center">
+    {
+        image ? (
+            <img
+                src={image}
+                alt={name}
+                class="w-20 h-20 rounded-full object-cover shrink-0"
+            />
+        ) : (
+            <div
+                class="w-20 h-20 rounded-full text-white grid place-items-center text-4xl font-light shrink-0"
+                style={`background-color: ${color ?? "#D1D5DB"}`}
+            >
+                {name?.charAt(0)}
+            </div>
+        )
+    }
+
+    <div class="flex flex-col justify-center">
+        <h3 class="font-semibold text-base">{name}</h3>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">{position}</p>
+        <p class="text-sm text-neutral-500 dark:text-neutral-300">{role}</p>
+    </div>
+</div>

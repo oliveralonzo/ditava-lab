@@ -1,0 +1,20 @@
+---
+// src/components/Hero.astro
+import type { CollectionEntry } from "astro:content";
+
+const { hero, id } = Astro.props as {
+    hero: CollectionEntry<"sections">;
+    id?: string;
+};
+
+const { Content } = await hero.render();
+---
+
+<section
+    id={id}
+    class="scroll-mt-navbar prose prose-neutral dark:prose-invert prose-lg
+           py-[4rem] md:py-[14rem] font-light leading-relaxed text-[1.2rem] lg:text-[1.7rem]
+           [&>p]:mb-[2rem]"
+>
+    <Content />
+</section>

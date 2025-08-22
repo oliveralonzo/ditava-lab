@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PersonCard from "./PersonCard.astro";
+import SectionHeading from "./SectionHeading.astro";
+import type { PersonType } from "../utils/constants";
+import { colorMap, type ColorKey } from "../utils/constants";
+
+interface Props {
+    title: string;
+    type: PersonType;
+    items: CollectionEntry<"people">[];
+    class?: string;
+}
+
+const { title, type, items, class: extraClass } = Astro.props as Props;
+
+const group = items.filter((p) => p.data.type === type && p.data.name?.trim());
+const colorKeys = Object.keys(colorMap);
+let imageLessIndex = 0;
+---
+
+{
+    group.length > 0 && (
+        <section class={extraClass}>
+            <SectionHeading level={2}>{title}</SectionHeading>
+
+            {type === "alumni" ? (
+                <p class="leading-relaxed font-light">
+                    <span
+                        set:html={group
+                            .map((p, i) => {
+                                const name = p.data.name;
+                                const position = p.data.position;
+                                const suffix = i < group.length - 1 ? ", " : "";
+                                return `<span class='font-semibold text-neutral-800 dark:text-white'>${name}</span> (${position})${suffix}`;
+                            })
+                            .join("")}
+                    />
+                </p>
+            ) : (
+                <div class="grid gap-x-[2vw] gap-y-[3vh] pb-[2vh] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    {group.map((p, i) => {
+                        const hasImage = !!p.data.image;
+                        const color = hasImage
+                            ? undefined
+                            : colorMap[
+                                  colorKeys[
+                                      imageLessIndex++ % colorKeys.length
+                                  ] as ColorKey
+                              ];
+                        return <PersonCard {...p.data} color={color} key={i} />;
+                    })}
+                </div>
+            )}
+        </section>
+    )
+}

@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import InfoSection from "../components/InfoSection.astro";
+import PeopleSection from "../components/PeopleSection.astro";
+import Footer from "../components/Footer.astro";
+import Hero from "../components/Hero.astro";
+
+import { getCollection, getEntry } from "astro:content";
+import { sortBySlug } from "../utils/helpers";
+
+const projects = sortBySlug({ entries: await getCollection("projects") });
+const publications = sortBySlug({
+	entries: await getCollection("publications"),
+	descending: true,
+});
+const people = await getCollection("people");
+
+const hero = await getEntry("sections", "hero");
+
+const sections = {
+	about: { id: "about", label: "About" },
+	projects: { id: "projects", label: "Projects" },
+	publications: { id: "publications", label: "Publications" },
+	people: { id: "people", label: "People" },
+};
+---
+
+<BaseLayout>
+	<Navbar sections={sections} />
+	<main class="px-[8vw] max-w-screen-xl mx-auto">
+		<Hero hero={hero} id={sections.about.id} />
+
+		<InfoSection
+			title="Current Projects"
+			items={projects.map((entry) => entry.data)}
+			id={sections.projects.id}
+		/>
+
+		<InfoSection
+			title="Recent Publications"
+			items={publications.map((entry) => entry.data)}
+			id={sections.publications.id}
+		/>
+
+		<PeopleSection people={people} id={sections.people.id} />
+	</main>
+	<Footer />
+</BaseLayout>

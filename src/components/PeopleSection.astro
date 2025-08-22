@@ -1,0 +1,37 @@
+---
+// PeopleSection.astro
+import PeopleGroup from "./PeopleGroup.astro";
+import SectionHeading from "./SectionHeading.astro";
+import type { CollectionEntry } from "astro:content";
+import { personTypes, type PersonType } from "../utils/constants";
+import { sortBySlug } from "../utils/helpers";
+
+const { people } = Astro.props as {
+    people: CollectionEntry<"people">[];
+};
+
+const titles: Record<PersonType, string> = {
+    faculty: "Faculty",
+    student: "Current Students",
+    alumni: "Alumni",
+};
+---
+
+<section class="mt-16">
+    <SectionHeading level={1} id="people">People</SectionHeading>
+
+    {
+        personTypes.map((type, i) => {
+            const filtered = people.filter((p) => p.data.type === type);
+            const group = sortBySlug({ entries: filtered });
+            return (
+                <PeopleGroup
+                    title={titles[type]}
+                    type={type}
+                    items={group}
+                    class={i === 0 ? "mt-0" : "mt-16"}
+                />
+            );
+        })
+    }
+</section>

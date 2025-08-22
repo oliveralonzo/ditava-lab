@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+/* Theme tokens */
+@theme {
+  --spacing-navbar: 6rem;
+  --font-lexend: "Lexend", sans-serif;
+
+  /* Site-wide background/text tokens (light defaults) */
+  --color-site-bg: var(--color-neutral-100);
+  --color-site-text: var(--color-black);
+}
+
+/* Dark-mode overrides based on system preference */
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-site-bg: var(--color-neutral-900);
+      --color-site-text: var(--color-neutral-100);
+    }
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reusable site background class */
+@layer components {
+  .bg-site {
+    background-color: var(--color-site-bg);
+    color: var(--color-site-text);
+  }
+}

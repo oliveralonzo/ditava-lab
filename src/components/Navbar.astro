@@ -1,0 +1,181 @@
+---
+import { colorMap } from "../utils/constants";
+const colorArray = Object.values(colorMap);
+
+interface Section {
+    id: string;
+    label: string;
+}
+
+const { sections } = Astro.props as {
+    sections: Record<string, Section>;
+};
+
+const navItems = Object.values(sections);
+---
+
+<nav
+    class="sticky bg-site top-0 z-50 flex h-navbar items-center w-full pr-4 md:pr-12 pl-4"
+>
+    <!-- Logo + Title -->
+    <a
+        href="#top"
+        class="flex items-center gap-3
+               transition-opacity duration-200 ease-in-out hover:opacity-70"
+    >
+        <img
+            src="/logo.svg"
+            alt="Ditava Lab logo"
+            class="aspect-square w-[3rem] sm:w-[3.5rem] md:w-[4rem]"
+        />
+        <span
+            class="font-lexend text-[1.6rem] sm:text-[1.8rem] md:text-[2rem] leading-none flex items-center"
+        >
+            <span class="font-semibold">ditava</span>
+            <span class="font-extralight ml-1">lab</span>
+        </span>
+    </a>
+
+    <!-- Hamburger toggle (mobile only) -->
+    <button
+        id="nav-toggle"
+        class="ml-auto md:hidden p-2 rounded-md transition-all"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        style="color: var(--current-color, black);"
+    >
+        <svg viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+            <path
+                d="M4 6h16M4 12h16M4 18h16"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"></path>
+        </svg>
+    </button>
+
+    <!-- Desktop nav -->
+    <ul
+        class="hidden md:flex ml-auto items-center font-sans text-[1rem] sm:text-[1.1rem]
+               [&_a]:px-8 [&_a]:py-[0.9rem]
+               [&_a]:transition-all [&_a]:duration-200 [&_a]:ease-in-out
+               [&_a]:hover:opacity-50"
+    >
+        {
+            navItems.map((item, i) => (
+                <li>
+                    <a
+                        href={`#${item.id}`}
+                        style={`--bg-color: ${colorArray[i % colorArray.length]};`}
+                        class="relative z-10 rounded-md
+                               [&.active-link]:text-white
+                               [&.active-link]:bg-[var(--bg-color)]"
+                    >
+                        {item.label}
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+</nav>
+
+<!-- Mobile menu (outside nav for simplicity) -->
+<ul
+    id="mobile-menu"
+    class="md:hidden fixed top-navbar left-0 w-full bg-white dark:bg-neutral-900 text-black dark:text-white z-40 hidden flex-col font-sans text-lg shadow-md
+           [&_a]:px-6 [&_a]:py-4 [&_a]:border-b [&_a]:border-neutral-200 dark:[&_a]:border-neutral-800
+           [&_a]:transition-all [&_a]:duration-200 [&_a]:ease-in-out [&_a]:hover:opacity-50"
+>
+    {
+        navItems.map((item, i) => (
+            <li>
+                <a
+                    href={`#${item.id}`}
+                    style={`--bg-color: ${colorArray[i % colorArray.length]};`}
+                    class="relative z-10 rounded-md block
+                           [&.active-link]:text-white
+                           [&.active-link]:font-semibold
+                           [&.active-link]:bg-[var(--bg-color)]"
+                >
+                    {item.label}
+                </a>
+            </li>
+        ))
+    }
+</ul>
+
+<script type="module">
+    const NAVBAR_HEIGHT = document.querySelector("nav")?.offsetHeight || 0;
+    const OFFSET = 32; // ≈ 2rem
+    const headings = [...document.querySelectorAll("main [id]")];
+    let lastScrollY = window.scrollY;
+
+    function updateActiveLink() {
+        const scrollY = window.scrollY;
+        const direction = scrollY > lastScrollY ? "down" : "up";
+        lastScrollY = scrollY;
+
+        let currentId = null;
+
+        for (let i = 0; i < headings.length; i++) {
+            const el = headings[i];
+            const top = el.getBoundingClientRect().top - NAVBAR_HEIGHT;
+
+            const isInOffset = top >= -OFFSET && top <= OFFSET;
+            if (isInOffset) {
+                currentId = el.id;
+                break;
+            }
+
+            if (direction === "down" && top < -OFFSET) {
+                currentId = el.id;
+            }
+
+            if (direction === "up" && currentId === null && top > OFFSET) {
+                currentId = el.id;
+                break;
+            }
+        }
+
+        document.querySelectorAll("nav a, #mobile-menu a").forEach((link) => {
+            link.classList.toggle(
+                "active-link",
+                link.getAttribute("href") === `#${currentId}`,
+            );
+        });
+
+        // NEW: update hamburger icon color based on active section
+        if (currentId) {
+            const activeLink = document.querySelector(
+                `a[href="#${currentId}"]`,
+            );
+            const bg = activeLink?.style.getPropertyValue("--bg-color");
+            if (bg) {
+                document.documentElement.style.setProperty(
+                    "--current-color",
+                    bg,
+                );
+            }
+        }
+    }
+
+    document.addEventListener("scroll", updateActiveLink, { passive: true });
+    window.addEventListener("load", updateActiveLink);
+</script>
+
+<script type="module">
+    const toggle = document.getElementById("nav-toggle");
+    const menu = document.getElementById("mobile-menu");
+
+    toggle?.addEventListener("click", () => {
+        const expanded = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", (!expanded).toString());
+        menu?.classList.toggle("hidden");
+    });
+
+    document.querySelectorAll("#mobile-menu a").forEach((link) => {
+        link.addEventListener("click", () => {
+            menu?.classList.add("hidden");
+            toggle?.setAttribute("aria-expanded", "false");
+        });
+    });
+</script>
