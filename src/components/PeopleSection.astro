@@ -4,11 +4,15 @@ import PeopleGroup from "./PeopleGroup.astro";
 import SectionHeading from "./SectionHeading.astro";
 import type { CollectionEntry } from "astro:content";
 import { personTypes, type PersonType } from "../utils/constants";
-import { sortBySlug } from "../utils/helpers";
+import { getPersonType, sortBySlug } from "../utils/helpers";
 
 const { people } = Astro.props as {
     people: CollectionEntry<"people">[];
 };
+
+const groupedPeople = people
+    .filter((person) => person.data.name.trim())
+    .map((person) => ({ person, type: getPersonType(person) }));
 
 const titles: Record<PersonType, string> = {
     faculty: "Faculty",
@@ -22,7 +26,9 @@ const titles: Record<PersonType, string> = {
 
     {
         personTypes.map((type, i) => {
-            const filtered = people.filter((p) => p.data.type === type);
+            const filtered = groupedPeople
+                .filter((entry) => entry.type === type)
+                .map((entry) => entry.person);
             const group = sortBySlug({ entries: filtered });
             return (
                 <PeopleGroup

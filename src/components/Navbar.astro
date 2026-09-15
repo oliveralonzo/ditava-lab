@@ -39,6 +39,7 @@ const navItems = Object.values(sections);
     <!-- Hamburger toggle (mobile only) -->
     <button
         id="nav-toggle"
+        aria-label="Open menu"
         class="ml-auto md:hidden p-2 rounded-md transition-all"
         aria-controls="mobile-menu"
         aria-expanded="false"
@@ -169,6 +170,7 @@ const navItems = Object.values(sections);
     toggle?.addEventListener("click", () => {
         const expanded = toggle.getAttribute("aria-expanded") === "true";
         toggle.setAttribute("aria-expanded", (!expanded).toString());
+        toggle.setAttribute("aria-label", expanded ? "Open menu" : "Close menu");
         menu?.classList.toggle("hidden");
     });
 
@@ -176,6 +178,7 @@ const navItems = Object.values(sections);
         link.addEventListener("click", () => {
             menu?.classList.add("hidden");
             toggle?.setAttribute("aria-expanded", "false");
+            toggle?.setAttribute("aria-label", "Open menu");
         });
     });
 </script>

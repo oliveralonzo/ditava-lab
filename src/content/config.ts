@@ -1,7 +1,6 @@
 // src/content/config.ts
 import { z, defineCollection } from "astro:content";
 import { colorMap } from "../utils/constants";
-import { personTypes } from "../utils/constants";
 
 const colorKeys = Object.keys(colorMap) as [keyof typeof colorMap];
 
@@ -10,6 +9,11 @@ const projectCollection = defineCollection({
         title: z.string(),
         detail: z.string(),
         color: z.enum(colorKeys),
+        funding: z.object({
+            agency: z.string(),
+            award: z.string().optional(),
+            link: z.string().url().optional(),
+        }).optional(),
     }),
 });
 
@@ -28,8 +32,8 @@ const peopleCollection = defineCollection({
         name: z.string(),
         position: z.string(),
         role: z.string(),
-        type: z.enum(personTypes),
         image: z.string().optional(),
+        website: z.string().url().optional(),
     }),
 });
 

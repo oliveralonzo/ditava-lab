@@ -1,7 +1,6 @@
 ---
 name: "Sarah Hau"
-position: "Undergraduate Student"
+position: "PhD Student"
 role: "Research Assistant"
 image: "" 
-type: "student"
 ---

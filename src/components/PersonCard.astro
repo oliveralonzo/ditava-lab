@@ -1,16 +1,14 @@
 ---
-import type { PersonType } from "../utils/constants";
-
 export interface PersonCardProps {
     name: string;
     position: string;
     role: string;
-    type: PersonType;
     image?: string;
+    website?: string;
     color?: string; // Used for background circle when no image
 }
 
-const { name, position, role, image, color } = Astro.props as PersonCardProps;
+const { name, position, role, image, color, website } = Astro.props as PersonCardProps;
 ---
 
 <div class="flex gap-4 items-center">
@@ -32,7 +30,11 @@ const { name, position, role, image, color } = Astro.props as PersonCardProps;
     }
 
     <div class="flex flex-col justify-center">
-        <h3 class="font-semibold text-base">{name}</h3>
+        <h3 class="font-semibold text-base">
+            {website ? (
+                <a href={website} target="_blank" rel="noopener noreferrer" class="underline underline-offset-4 hover:decoration-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">{name}</a>
+            ) : name}
+        </h3>
         <p class="text-sm text-neutral-600 dark:text-neutral-400">{position}</p>
         <p class="text-sm text-neutral-500 dark:text-neutral-300">{role}</p>
     </div>

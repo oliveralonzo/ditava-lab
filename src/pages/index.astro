@@ -9,7 +9,11 @@ import Hero from "../components/Hero.astro";
 import { getCollection, getEntry } from "astro:content";
 import { sortBySlug } from "../utils/helpers";
 
-const projects = sortBySlug({ entries: await getCollection("projects") });
+const projects = sortBySlug({
+	entries: await getCollection("projects", ({ id }) =>
+		!id.split("/").pop()!.startsWith("x-")
+	),
+});
 const publications = sortBySlug({
 	entries: await getCollection("publications"),
 	descending: true,
@@ -39,7 +43,10 @@ const sections = {
 
 		<InfoSection
 			title="Recent Publications"
-			items={publications.map((entry) => entry.data)}
+			items={publications.map((entry) => ({
+				...entry.data,
+				missingLinkText: "Link coming soon",
+			}))}
 			id={sections.publications.id}
 		/>
 

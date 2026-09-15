@@ -14,7 +14,7 @@ interface Props {
 
 const { title, type, items, class: extraClass } = Astro.props as Props;
 
-const group = items.filter((p) => p.data.type === type && p.data.name?.trim());
+const group = items.filter((p) => p.data.name?.trim());
 const colorKeys = Object.keys(colorMap);
 let imageLessIndex = 0;
 ---

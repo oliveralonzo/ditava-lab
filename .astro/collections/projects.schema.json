@@ -19,6 +19,25 @@
             "green"
           ]
         },
+        "funding": {
+          "type": "object",
+          "properties": {
+            "agency": {
+              "type": "string"
+            },
+            "award": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "agency"
+          ],
+          "additionalProperties": false
+        },
         "$schema": {
           "type": "string"
         }

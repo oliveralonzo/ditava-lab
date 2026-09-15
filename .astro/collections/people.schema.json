@@ -13,16 +13,12 @@
         "role": {
           "type": "string"
         },
-        "type": {
-          "type": "string",
-          "enum": [
-            "faculty",
-            "student",
-            "alumni"
-          ]
-        },
         "image": {
           "type": "string"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri"
         },
         "$schema": {
           "type": "string"
@@ -31,8 +27,7 @@
       "required": [
         "name",
         "position",
-        "role",
-        "type"
+        "role"
       ],
       "additionalProperties": false
     }

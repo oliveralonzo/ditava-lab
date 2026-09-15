@@ -7,6 +7,12 @@ export interface InfoCardData {
     detail?: string;
     color?: ColorKey;
     link?: string;
+    missingLinkText?: string;
+    funding?: {
+        agency: string;
+        award?: string;
+        link?: string;
+    };
 }
 
 const {
@@ -14,10 +20,13 @@ const {
     title,
     detail,
     link,
+    missingLinkText,
+    funding,
     color = "gray",
 } = Astro.props as InfoCardData;
 
 const resolvedColor = colorMap[color as ColorKey] ?? "#E5E7EB";
+const FundingTag = funding?.link ? "a" : "span";
 
 const RootTag = link ? "a" : "div";
 const rootProps = link
@@ -27,16 +36,16 @@ const rootProps = link
 
 <RootTag
     {...rootProps}
-    class={`group relative block rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-800 shadow-md dark:shadow-none dark:ring-1 dark:ring-neutral-700 ${
+    class={`group relative flex flex-col rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-800 shadow-md dark:shadow-none dark:ring-1 dark:ring-neutral-700 ${
         link
             ? "cursor-pointer transition transform hover:scale-[1.01] hover:opacity-95 hover:shadow-lg dark:hover:bg-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bg-color)]"
             : ""
     }`}
     style={`--bg-color:${resolvedColor}`}
-    aria-label={link ? "View publication" : undefined}
+    aria-label={link ? `View publication: ${title}` : undefined}
 >
-    <div class="h-3 w-full" style={`background-color: ${resolvedColor}`}></div>
-    <div class="p-4">
+    <div class="h-3 w-full shrink-0" style={`background-color: ${resolvedColor}`}></div>
+    <div class="flex flex-1 flex-col p-4">
         {
             label && (
                 <h4 class="text-sm font-bold uppercase mb-1 text-neutral-500 dark:text-neutral-300">
@@ -52,16 +61,32 @@ const rootProps = link
                 </p>
             )
         }
+        {
+            funding && (
+                <div class="mt-auto pt-4">
+                    <FundingTag
+                        href={funding.link}
+                        target={funding.link ? "_blank" : undefined}
+                        rel={funding.link ? "noopener noreferrer" : undefined}
+                        aria-label={funding.award ? `${funding.agency} funded — Award ${funding.award}` : undefined}
+                        class={`inline-flex rounded-full border border-neutral-300 px-3 py-1 text-xs font-medium text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 ${funding.link ? "transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" : ""}`}
+                    >
+                        {funding.agency} funded
+                    </FundingTag>
+                </div>
+            )
+        }
+        {
+            (link || missingLinkText) && (
+                <p class="mt-auto pt-3 text-sm text-neutral-600 dark:text-neutral-300">
+                    {link ? (
+                        <span class="underline underline-offset-4 transition-colors hover:text-neutral-900 hover:decoration-2 group-focus-visible:text-neutral-900 group-focus-visible:decoration-2 dark:hover:text-white dark:group-focus-visible:text-white">View publication</span>
+                    ) : (
+                        <span class="italic">{missingLinkText}</span>
+                    )}
+                </p>
+            )
+        }
     </div>
 
-    {
-        link && (
-            <span
-                class="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100"
-                style="background-color: var(--bg-color)"
-            >
-                View publication
-            </span>
-        )
-    }
 </RootTag>
